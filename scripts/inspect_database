@@ -4,6 +4,7 @@ import random
 import yaml
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np  
 
 ROOT = Path(__file__).resolve().parent.parent / "data"
 SPLITS = ["train", "valid", "test"]
@@ -36,7 +37,26 @@ for split in SPLITS:
     for c, n in sorted(class_counts.items()):
         print(f"  {names[c]}: {n}")
 
-# 2) Draw boxes on a few random training images
+# 2) Median box size per class (training labels)
+sizes = {c: [] for c in range(len(names))}
+for lf in (ROOT / "train" / "labels").glob("*.txt"):
+    for c, xc, yc, bw, bh in read_labels(lf):
+        sizes[c].append((bw, bh))
+
+print("\nBox size per class (train split)")
+print("  class: n | median w x h (fraction) | median area (fraction) | "
+      "median w x h (pixels at imgsz=640)")
+for c, wh in sizes.items():
+    if not wh:
+        continue
+    wh = np.array(wh)
+    w_med, h_med = np.median(wh[:, 0]), np.median(wh[:, 1])
+    area_med = np.median(wh[:, 0] * wh[:, 1])
+    # imgsz=640 scales the 720x540 image so the long side is 640 (so 640 x 480)
+    print(f"  {names[c]}: n={len(wh)} | {w_med:.3f} x {h_med:.3f} | "
+          f"{area_med:.4f} | {w_med * 640:.0f} x {h_med * 480:.0f} px")
+
+# 3) Draw boxes on a few random training images
 sample = random.sample(sorted((ROOT / "train" / "images").glob("*.jpg")), 6)
 fig, axes = plt.subplots(2, 3, figsize=(15, 8))
 for ax, img_path in zip(axes.ravel(), sample):
