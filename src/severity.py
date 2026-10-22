@@ -1,13 +1,12 @@
 """Severity scoring for detected packaging defects."""
 from typing import Dict, Iterable, Tuple
 
-# Placeholder weights: engineering judgement, to be justified and varied
-# in the sensitivity analysis.
+# Engineering-judgement weights (see report for justification); varied in sensitivity analysis.
 DEFAULT_WEIGHTS: Dict[str, float] = {
     "unsealed": 1.0,
-    "packaging-error": 0.7,
-    "loose-meat": 0.6,
-    "twisted-meat": 0.6,
+    "packaging-error": 0.9,
+    "loose-meat": 0.5,
+    "twisted-meat": 0.5,
     "wrinkle": 0.2,
 }
 
