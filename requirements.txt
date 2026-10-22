@@ -1,0 +1,7 @@
+numpy
+opencv-python
+matplotlib
+pyyaml
+pytest>=9.0
+pytest-html>=4.2
+pdoc>=16.0

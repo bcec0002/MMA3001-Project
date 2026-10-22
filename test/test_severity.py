@@ -1,4 +1,5 @@
 import pytest
+from src.severity import DEFAULT_WEIGHTS
 from src.severity import (box_extent, defect_severity, tray_severity,
                           tray_passes)
 
@@ -41,3 +42,13 @@ def test_pass_fail_threshold():
     defects = [("unsealed", 0.5, 0.5)]  # severity 0.25
     assert tray_passes(defects, threshold=0.3)
     assert not tray_passes(defects, threshold=0.2)
+
+
+
+def test_packaging_error_weight():
+    assert defect_severity("packaging-error", 0.5, 0.5) == pytest.approx(0.9 * 0.25)
+
+
+def test_weights_cover_all_dataset_classes():
+    classes = {"loose-meat", "packaging-error", "twisted-meat", "unsealed", "wrinkle"}
+    assert set(DEFAULT_WEIGHTS) == classes
